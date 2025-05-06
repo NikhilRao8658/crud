@@ -100,6 +100,13 @@ const Login = () => {
                 type="submit"
                 className="ml-auto group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
+                User Login
+              </button>
+             
+              <button
+                type="submit"
+                className="ml-auto group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
                 Login
               </button>
             </div>

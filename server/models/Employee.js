@@ -1,50 +1,4 @@
-// const pool = require('../config/db');
-
-// class Employee {
-//   static async getAll() {
-//     const [rows] = await pool.query('SELECT * FROM employees');
-//     return rows;
-//   }
-
-//   static async getById(id) {
-//     const [rows] = await pool.query('SELECT * FROM employees WHERE id = ?', [id]);
-//     return rows[0];
-//   }
-
-//   static async create(employee) {
-//     const { title, firstName, lastName, email, role, password } = employee;
-//     const [result] = await pool.query(
-//       'INSERT INTO employees (title, first_name, last_name, email, role, password) VALUES (?, ?, ?, ?, ?, ?)',
-//       [title, firstName, lastName, email, role, password]
-//     );
-//     return result.insertId;
-//   }
-
-//   static async update(id, employee) {
-//     const { title, firstName, lastName, email, role, password } = employee;
-//     const query = password 
-//       ? 'UPDATE employees SET title = ?, first_name = ?, last_name = ?, email = ?, role = ?, password = ? WHERE id = ?'
-//       : 'UPDATE employees SET title = ?, first_name = ?, last_name = ?, email = ?, role = ? WHERE id = ?';
-    
-//     const params = password
-//       ? [title, firstName, lastName, email, role, password, id]
-//       : [title, firstName, lastName, email, role, id];
-    
-//     const [result] = await pool.query(query, params);
-//     return result.affectedRows;
-//   }
-
-//   static async delete(id) {
-//     const [result] = await pool.query('DELETE FROM employees WHERE id = ?', [id]);
-//     return result.affectedRows;
-//   }
-// }
-
-// module.exports = Employee;
-
-
-
-const pool = require('../config/db'); // Your MySQL connection pool
+const pool = require('../config/db');
 
 class Employee {
   static async getAll() {
@@ -69,6 +23,9 @@ class Employee {
       gender,
       profile_pic,
     } = data;
+
+    // Log data for debugging
+    console.log('Employee.create data:', data);
 
     const [result] = await pool.query(
       `INSERT INTO employees (title, first_name, last_name, email, role, password, hobbies, gender, profile_pic)
@@ -101,6 +58,9 @@ class Employee {
       profile_pic,
     } = data;
 
+    // Log data for debugging
+    console.log('Employee.update data:', data);
+
     const fields = [];
     const values = [];
 
@@ -124,7 +84,7 @@ class Employee {
       fields.push('role = ?');
       values.push(role);
     }
-    if (password) {
+    if (password !== undefined) {
       fields.push('password = ?');
       values.push(password);
     }

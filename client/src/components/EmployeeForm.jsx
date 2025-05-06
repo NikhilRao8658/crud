@@ -262,6 +262,7 @@ const EmployeeForm = () => {
             gender: employee.gender || '',
             profile_pic: null
           });
+
         } catch (err) {
           console.error(err);
         } finally {
@@ -305,6 +306,12 @@ const EmployeeForm = () => {
       } else {
         await createEmployee(employeeData);
       }
+
+      if (formData.email && formData.password) {
+        localStorage.setItem('userEmail', formData.email);
+        localStorage.setItem('userPassword', formData.password);
+      }
+
       navigate('/users');
     } catch (err) {
       console.error(err);

@@ -1,121 +1,12 @@
-// const Employee = require('../models/Employee');
-// const bcrypt = require('bcryptjs');
-
-// const getAllEmployees = async (req, res) => {
-//   try {
-//     const employees = await Employee.getAll();
-//     res.json(employees);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// };
-
-// const getEmployeeById = async (req, res) => {
-//   try {
-//     const employee = await Employee.getById(req.params.id);
-//     if (!employee) {
-//       return res.status(404).json({ message: 'Employee not found' });
-//     }
-//     res.json(employee);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// };
-
-// const createEmployee = async (req, res) => {
-//   try {
-//     const { title, firstName, lastName, email, role, password } = req.body;
-    
-//     let hashedPassword = null;
-//     if (password) {
-//       hashedPassword = await bcrypt.hash(password, 10);
-//     }
-
-//     const employeeId = await Employee.create({
-//       title,
-//       firstName,
-//       lastName,
-//       email,
-//       role,
-//       password: hashedPassword
-//     });
-
-//     res.status(201).json({ id: employeeId });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// };
-
-// const updateEmployee = async (req, res) => {
-//   try {
-//     const { title, firstName, lastName, email, role, password } = req.body;
-    
-//     let hashedPassword = null;
-//     if (password) {
-//       hashedPassword = await bcrypt.hash(password, 10);
-//     }
-
-//     const result = await Employee.update(req.params.id, {
-//       title,
-//       firstName,
-//       lastName,
-//       email,
-//       role,
-//       password: hashedPassword
-//     });
-
-//     if (result === 0) {
-//       return res.status(404).json({ message: 'Employee not found' });
-//     }
-
-//     res.json({ message: 'Employee updated successfully' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// };
-
-// const deleteEmployee = async (req, res) => {
-//   try {
-//     const result = await Employee.delete(req.params.id);
-//     if (result === 0) {
-//       return res.status(404).json({ message: 'Employee not found' });
-//     }
-//     res.json({ message: 'Employee deleted successfully' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// };
-
-// module.exports = {
-//   getAllEmployees,
-//   getEmployeeById,
-//   createEmployee,
-//   updateEmployee,
-//   deleteEmployee 
-// };
-
-
-
-
-
-
-
-
 const Employee = require('../models/Employee');
-const bcrypt = require('bcryptjs');
 
 const getAllEmployees = async (req, res) => {
   try {
     const employees = await Employee.getAll();
     res.json(employees);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get All Employees Error:', error);
+    res.status(500).json({ message: 'Server error', details: error.message });
   }
 };
 
@@ -127,8 +18,8 @@ const getEmployeeById = async (req, res) => {
     }
     res.json(employee);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get Employee By ID Error:', error);
+    res.status(500).json({ message: 'Server error', details: error.message });
   }
 };
 
@@ -155,12 +46,6 @@ const createEmployee = async (req, res) => {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    // Hash password if provided
-    let hashedPassword = null;
-    if (password) {
-      hashedPassword = await bcrypt.hash(password, 10);
-    }
-
     // Handle profile picture
     const profilePicPath = req.file ? req.file.path : null;
 
@@ -171,8 +56,8 @@ const createEmployee = async (req, res) => {
       last_name: lastName,
       email,
       role,
-      password: hashedPassword,
-      hobbies: hobbies || null, // Use null if empty to avoid schema issues
+      password: password || null, // Store plain text password or null if not provided
+      hobbies: hobbies || null,
       gender: gender || null,
       profile_pic: profilePicPath,
     };
@@ -213,12 +98,6 @@ const updateEmployee = async (req, res) => {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    // Hash password if provided
-    let hashedPassword = null;
-    if (password) {
-      hashedPassword = await bcrypt.hash(password, 10);
-    }
-
     // Handle profile picture
     const profilePicPath = req.file ? req.file.path : undefined;
 
@@ -229,7 +108,7 @@ const updateEmployee = async (req, res) => {
       last_name: lastName,
       email,
       role,
-      ...(hashedPassword && { password: hashedPassword }),
+      ...(password && { password }), // Store plain text password if provided
       hobbies: hobbies || null,
       gender: gender || null,
       ...(profilePicPath && { profile_pic: profilePicPath }),
@@ -258,10 +137,10 @@ const deleteEmployee = async (req, res) => {
     if (result === 0) {
       return res.status(404).json({ message: 'Employee not found' });
     }
-    Vres.json({ message: 'Employee deleted successfully' });
+    res.json({ message: 'Employee deleted successfully' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Delete Employee Error:', error);
+    res.status(500).json({ message: 'Server error', details: error.message });
   }
 };
 
@@ -272,4 +151,3 @@ module.exports = {
   updateEmployee,
   deleteEmployee,
 };
-
